@@ -50,26 +50,33 @@ void interact()
 void find_cmd(char *buffer)
 {
 	pid_t check_process;
-	char **arr;
+	char **arr, *tok;
 	int i = 0, status;
+	char delim[] = {' ', '\n'};
 
 	check_process = fork();
 	if (check_process == 0)
 	{
 		arr = malloc(sizeof(buffer));
-		arr[i] = strtok(buffer, " ");
-		for (i++; arr[i] != NULL; i++)
+		tok = malloc(sizeof(buffer));
+		tok = strtok(buffer, delim);
+		for (i = 0; tok != NULL; i++)
 		{
-			arr[i] = strtok(NULL, " ");
+			arr[i] = tok;
+			tok = strtok(NULL, delim);
 		}
+		arr[i] = NULL;
 		for (i = 0; arr[i] != NULL; i++)
 		{
-			printf("%s\n", arr[i]);
+			printf("%s", arr[i]);
 		}
 		if (execve(arr[0], arr, NULL) == -1)
-			printf("Error\n");
-		else
-			wait(&status);
+			perror("execve error");
 		free(arr);
+	}
+	else
+	{
+		wait(&status);
+		printf("done\n");
 	}
 }
