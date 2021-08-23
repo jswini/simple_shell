@@ -54,29 +54,38 @@ void find_cmd(char *buffer)
 	int i = 0, status;
 	char delim[] = {' ', '\n'};
 
-	check_process = fork();
-	if (check_process == 0)
+	
+	arr = malloc(sizeof(buffer));
+	tok = malloc(sizeof(buffer));
+	tok = strtok(buffer, delim);
+	for (i = 0; tok != NULL; i++)
 	{
-		arr = malloc(sizeof(buffer));
-		tok = malloc(sizeof(buffer));
-		tok = strtok(buffer, delim);
-		for (i = 0; tok != NULL; i++)
-		{
-			arr[i] = tok;
-			tok = strtok(NULL, delim);
-		}
-		arr[i] = NULL;
-		for (i = 0; arr[i] != NULL; i++)
-		{
-			printf("%s", arr[i]);
-		}
-		if (execve(arr[0], arr, NULL) == -1)
-			perror("execve error");
-		free(arr);
+		arr[i] = tok;
+		tok = strtok(NULL, delim);
 	}
+	arr[i] = NULL;
+	
+	if (find_files(arr) == -1)
+		perror("find failed\n");
 	else
 	{
-		wait(&status);
-		printf("done\n");
+		printf("find success\n");
+		check_process = fork();
+		if (check_process == 0)
+		{	
+			for (i = 0; arr[i] != NULL; i++)
+			{
+				printf("%s", arr[i]);
+				}
+			
+				if (execve(arr[0], arr, NULL) == -1)
+					perror("execve error");
+			free(arr);
+		}
+		else
+		{
+			wait(&status);
+			printf("done\n");
+		}
 	}
 }

@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 int find_files(char** filename);
+char *_getenv(const char *name);
 
 extern char **environ;
 
