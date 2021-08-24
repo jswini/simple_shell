@@ -1,5 +1,70 @@
 #include "shell_header.h"
 /**
+ * str_concat - concatenates two strings
+ * @s1: pointer to first string
+ * @s2: pointer to second string
+ *
+ * Return: pointer to new string, NULL if fails
+ */
+
+char *_strcat(char *s1, char *s2)
+{
+	int size1, size2, i, j;
+	char *ptr;
+
+	if (s1 == NULL)
+		s1 = "";
+	if (s2 == NULL)
+		s2 = "";
+	for (size1 = 0; s1[size1] != 0; size1++)
+	{}
+	for (size2 = 0; s2[size2] != 0; size2++)
+	{}
+	ptr = malloc(sizeof(char) * (size1 + size2 + 1));
+	if (ptr == NULL)
+		return (NULL);
+	for (i = 0; s1[i] != 0; i++)
+	{
+		ptr[i] = s1[i];
+	}
+	for (j = 0; s2[j] != 0; j++)
+	{
+		ptr[i] = s2[j];
+		i++;
+	}
+	ptr[i] = 0;
+	return (ptr);
+}
+/**
+ * _strdup - copies string to allocated memory
+ * @str: pointer to a string
+ *
+ * Return: pointer to copied string, NULL if str is NULL or malloc error
+ */
+
+char *_strdup(const char *str)
+{
+	int size, i;
+	char *ptr;
+
+	if (str == NULL)
+		return (NULL);
+	for (size = 0; str[size] != 0; size++)
+	{}
+	size++;
+	ptr = malloc(sizeof(char) * (size + 1));
+	if (ptr == NULL)
+		return (NULL);
+	for (i = 0; str[i] != '\0'; i++)
+	{
+		ptr[i] = str[i];
+	}
+	ptr[i] = '/';
+	i++;
+	ptr[i] = '\0';
+	return (ptr);
+}
+/**
  * add_node_end - adds a node to the end of a singly linked list
  * @head: pointer to the list
  * @str: string to store in the new node
@@ -20,7 +85,7 @@ paths *add_node_end(paths **head, const char *str)
 	}
 	else
 	{
-		new->file_path = strcat(strdup(str), "/");
+		new->file_path = _strdup(str);
 		if (!new->file_path)
 		{
 			free(new);
@@ -41,7 +106,6 @@ paths *add_node_end(paths **head, const char *str)
 		}
 		last->next = new;
 	}
-
 	return (new);
 }
 
@@ -56,7 +120,6 @@ paths *get_path(void)
     {
         if (strncmp(environ[i], "PATH", 4) == 0)
         {
-/*			path = malloc(sizeof(environ[i]));*/
 			path = environ[i];
 			break;
 		}
@@ -68,7 +131,6 @@ paths *get_path(void)
 		add_node_end(&path_list, path_tok);
 		path_tok = strtok(NULL, delim);
 	}
-/*	free(path);*/
 
 	return (path_list);
 }
