@@ -11,9 +11,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-int find_files(char** filename);
-char *_getenv(const char *name);
+
+typedef struct linked_list
+{
+	char *file_path;
+	struct linked_list *next;
+} paths;
 
 extern char **environ;
+
+int find_files(char** filename);
+char *_getenv(const char *name);
+paths *add_node(paths **head, const char *str);
 
 #endif /*SHELL_HEADER_H*/
