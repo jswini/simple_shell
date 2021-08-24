@@ -1,6 +1,5 @@
 #include "shell_header.h"
-void interact();
-void find_cmd(char *buffer);
+
 /**
  * main - 
  * @ac: number of arguments
@@ -45,18 +44,19 @@ void interact()
 			return;}
 		find_cmd(buffer);
 	}
+	free(buffer);
 }
 
 void find_cmd(char *buffer)
 {
-	pid_t check_process;
 	char **arr, *tok;
-	int i = 0, status;
+	int i = 0;
 	char delim[] = {' ', '\n'};
 
 	
-	arr = malloc(sizeof(buffer));
-	tok = malloc(sizeof(buffer));
+	arr = malloc(sizeof(char *) * 32);
+	if (!arr)
+		return;
 	tok = strtok(buffer, delim);
 	for (i = 0; tok != NULL; i++)
 	{
@@ -69,23 +69,55 @@ void find_cmd(char *buffer)
 		perror("find failed\n");
 	else
 	{
-		printf("find success\n");
-		check_process = fork();
-		if (check_process == 0)
-		{	
-			for (i = 0; arr[i] != NULL; i++)
-			{
-				printf("%s", arr[i]);
-				}
-			
-				if (execve(arr[0], arr, NULL) == -1)
-					perror("execve error");
-			free(arr);
-		}
-		else
+		execute_command(arr);
+	}
+	free(arr);
+}
+
+void execute_command(char **cmd)
+{
+	pid_t check_process;
+	int i, status;
+
+	check_process = fork();
+	if (check_process < 0)
+	{
+		perror("fork error");
+		return;
+	}
+	
+	if (check_process == 0)
+	{	
+		for (i = 0; cmd[i] != NULL; i++)
 		{
-			wait(&status);
-			printf("done\n");
+			if (execve(cmd[0], cmd, NULL) == -1)
+				perror("execve error");
 		}
 	}
+	else
+	{
+			wait(&status);
+	}
+}
+int find_files(char **filename)
+   {
+    unsigned int i;
+    struct stat st;
+
+    i = 0;
+    while (filename[i])
+    {
+        printf("%s:", filename[i]);
+        if (stat(filename[i], &st) == 0)
+        {
+            printf(" FOUND\n");
+        }
+        else
+        {
+            printf(" NOT FOUND\n");
+			return (-1);
+        }
+        i++;
+    }
+    return (0);
 }
