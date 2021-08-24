@@ -24,7 +24,7 @@ size_t print_list(const paths *h)
 	}
 	return (nodes);
 }
-paths *path_list()
+paths *path_list(void)
 {
 	int i;
 	char *path, *path_tok;
@@ -37,6 +37,7 @@ paths *path_list()
         {
 			path = malloc(sizeof(environ[i]));
 			path = environ[i];
+			break;
 		}
 	}
 	path_tok = strtok(path, delim);

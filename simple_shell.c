@@ -49,7 +49,7 @@ void interact()
 
 void find_cmd(char *buffer)
 {
-	char **arr, *tok;
+	char **arr, *tok, *file;
 	int i = 0;
 	char delim[] = {' ', '\n'};
 
@@ -65,8 +65,13 @@ void find_cmd(char *buffer)
 	}
 	arr[i] = NULL;
 	
-	if (find_files(arr) == -1)
-		perror("find failed\n");
+	for (i = 0; arr[i] != NULL; i++)
+		printf("%d %s\n", i, arr[i]);
+	file = malloc(sizeof(char) * 1024);
+	file = find_files(arr[0]);
+	printf("file: %s\n", file);
+	if (arr[0] == NULL)
+		perror("find failed");
 	else
 	{
 		execute_command(arr);
@@ -99,25 +104,31 @@ void execute_command(char **cmd)
 			wait(&status);
 	}
 }
-int find_files(char **filename)
+char *find_files(char *filename)
    {
-    unsigned int i;
     struct stat st;
+	paths *path, *ptr;
+	char *file;
 
-    i = 0;
-    while (filename[i])
+	if (stat(filename, &st) == 0)
     {
-        printf("%s:", filename[i]);
-        if (stat(filename[i], &st) == 0)
+        return (filename);
+	}
+    path = get_path();
+	ptr = path;
+    while (ptr->next)
+    {
+		file = strcat(ptr->file_path, filename);
+		printf("file2: %s\n", file);
+        if (stat(file, &st) == 0)
         {
-            printf(" FOUND\n");
+			printf("file3: %s\n", file);
+			free_list(path);
+			return (*file);
         }
-        else
-        {
-            printf(" NOT FOUND\n");
-			return (-1);
-        }
-        i++;
+        ptr = ptr->next;
     }
-    return (0);
+    perror("file find failure");
+	free_list(path);
+	return (NULL);
 }
