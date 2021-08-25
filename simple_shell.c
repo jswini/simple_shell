@@ -10,19 +10,23 @@
 
 int main(int ac, char **av)
 {
+	paths *path;
+
+	path = get_path();
 	if (ac > 1)/*Non-interactive*/
 	{
 		return (0);
 	}
 	else /*Interactive*/
 	{
-		interact();
+		interact(path);
 	}
 	(void)av;
+	free_list(path);
 	return (0);
 }
 
-void interact()
+void interact(paths *path)
 {
 	char *buffer;
 	size_t bytes = 1;
@@ -31,28 +35,31 @@ void interact()
 	buffer = malloc(sizeof(char) * bytes);
 	if (!buffer)
 		return;
-	while (1 == 1)/*Infinate loop*/
+	while (1 == 1)/*Infinite loop*/
 	{
 		if (write(1, "$ ", 2) < 0)
 		{
 			free(buffer);
-			return;}
+			return;
+		}
 		num_of_char = getline(&buffer, &bytes, stdin);
-		if (num_of_char < 0)
+		if (num_of_char == EOF)
 		{
+			write(1, "\n", 1);
 			free(buffer);
-			return;}
-		find_cmd(buffer);
+			return;
+		}
+		find_cmd(path, buffer);
 	}
 	free(buffer);
 }
 
-void find_cmd(char *buffer)
+void find_cmd(paths *path, char *buffer)
 {
 	char **arr, *tok;
 	int i = 0;
 	char delim[] = {' ', '\n'};
-	paths *path;
+	
 
 	arr = malloc(sizeof(char *) * 32);
 	if (!arr)
@@ -68,7 +75,7 @@ void find_cmd(char *buffer)
 	for (i = 0; arr[i] != NULL; i++)
 		printf("%d %s\n", i, arr[i]);
 /*	file = malloc(sizeof(char) * 1024);*/
-	path = get_path();
+	
 	arr[0] = find_files(path, arr[0]);
 	if (arr[0] == NULL)
 		perror("find failed");
@@ -78,7 +85,7 @@ void find_cmd(char *buffer)
 	}
 	free(arr[0]);
 	free(arr);
-	free_list(path);
+	
 }
 
 void execute_command(char **cmd)
@@ -134,7 +141,5 @@ char *find_files(paths *path, char *filename)
         ptr = ptr->next;
     }
     perror("file find failure");
-	free_list(path);
-	free(file);
 	return (NULL);
 }
