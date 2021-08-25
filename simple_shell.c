@@ -1,6 +1,5 @@
 #include "shell_header.h"
-void interact();
-void find_cmd(char *buffer);
+
 /**
  * main - 
  * @ac: number of arguments
@@ -45,18 +44,19 @@ void interact()
 			return;}
 		find_cmd(buffer);
 	}
+	free(buffer);
 }
 
 void find_cmd(char *buffer)
 {
-	pid_t check_process;
 	char **arr, *tok;
-	int i = 0, status;
+	int i = 0;
 	char delim[] = {' ', '\n'};
+	paths *path;
 
-	
-	arr = malloc(sizeof(buffer));
-	tok = malloc(sizeof(buffer));
+	arr = malloc(sizeof(char *) * 32);
+	if (!arr)
+		return;
 	tok = strtok(buffer, delim);
 	for (i = 0; tok != NULL; i++)
 	{
@@ -65,27 +65,76 @@ void find_cmd(char *buffer)
 	}
 	arr[i] = NULL;
 	
-	if (find_files(arr) == -1)
-		perror("find failed\n");
+	for (i = 0; arr[i] != NULL; i++)
+		printf("%d %s\n", i, arr[i]);
+/*	file = malloc(sizeof(char) * 1024);*/
+	path = get_path();
+	arr[0] = find_files(path, arr[0]);
+	if (arr[0] == NULL)
+		perror("find failed");
 	else
 	{
-		printf("find success\n");
-		check_process = fork();
-		if (check_process == 0)
-		{	
-			for (i = 0; arr[i] != NULL; i++)
-			{
-				printf("%s", arr[i]);
-				}
-			
-				if (execve(arr[0], arr, NULL) == -1)
-					perror("execve error");
-			free(arr);
-		}
-		else
+		execute_command(arr);
+	}
+	free(arr[0]);
+	free(arr);
+	free_list(path);
+}
+
+void execute_command(char **cmd)
+{
+	pid_t check_process;
+	int i, status;
+
+	check_process = fork();
+	if (check_process < 0)
+	{
+		perror("fork error");
+		return;
+	}
+	
+	if (check_process == 0)
+	{	
+		for (i = 0; cmd[i] != NULL; i++)
 		{
-			wait(&status);
-			printf("done\n");
+			if (execve(cmd[0], cmd, NULL) == -1)
+				perror("execve error");
 		}
 	}
+	else
+	{
+			wait(&status);
+	}
+}
+char *find_files(paths *path, char *filename)
+   {
+    struct stat st;
+	paths  *ptr;
+	char *file;
+
+	if (stat(filename, &st) == 0)
+    {
+        return (filename);
+	}
+    
+	ptr = path;
+    while (ptr->next)
+    {
+		file = _strcat(ptr->file_path, filename);
+        if (stat(file, &st) == 0)
+        {
+/*			free_list(path);*/
+			printf("file3: %s\n", file);
+			return (file);
+        }
+		else
+		{
+			free(file);
+		}
+        ptr = ptr->next;
+    }
+    perror("file find failure");
+	free_list(path);
+	free(file);
+	return (NULL);
 }

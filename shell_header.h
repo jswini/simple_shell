@@ -11,7 +11,23 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-int find_files(char** filename);
+
+typedef struct linked_list
+{
+	char *file_path;
+	struct linked_list *next;
+} paths;
+
+char *find_files(paths *path, char *filename);
+void print_env();
+int exit_shell();
+void interact();
+void find_cmd(char *buffer);
+void execute_command(char **cmd);
+paths *get_path(void);
+void free_list(paths *head);
+size_t print_list(const paths *h);
+char *_strcat(char *s1, char *s2);
 
 extern char **environ;
 
