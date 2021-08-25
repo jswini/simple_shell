@@ -28,6 +28,7 @@ paths *get_path(void);
 void free_list(paths *head);
 size_t print_list(const paths *h);
 char *_strcat(char *s1, char *s2);
+int _strlen(char *s);
 
 extern char **environ;
 
