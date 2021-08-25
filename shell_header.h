@@ -21,8 +21,8 @@ typedef struct linked_list
 char *find_files(paths *path, char *filename);
 void print_env();
 int exit_shell();
-void interact();
-void find_cmd(char *buffer);
+void interact(paths *path);
+void find_cmd(paths *path, char *buffer);
 void execute_command(char **cmd);
 paths *get_path(void);
 void free_list(paths *head);
