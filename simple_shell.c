@@ -49,7 +49,8 @@ void interact(paths *path)
 			free(buffer);
 			return;
 		}
-		find_cmd(path, buffer);
+		if (buffer[0] != '\n')
+			find_cmd(path, buffer);
 	}
 	free(buffer);
 }
@@ -74,8 +75,12 @@ void find_cmd(paths *path, char *buffer)
 	
 	for (i = 0; arr[i] != NULL; i++)
 		printf("%d %s\n", i, arr[i]);
-/*	file = malloc(sizeof(char) * 1024);*/
 	
+	if (strcmp(arr[0], "env") == 0)
+		print_env();
+	if (strcmp(arr[0], "exit") == 0)
+		exit_shell();
+
 	arr[0] = find_files(path, arr[0]);
 	if (arr[0] == NULL)
 		perror("find failed");
