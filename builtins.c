@@ -1,10 +1,10 @@
 #include "shell_header.h"
-/*debugging*/
+/*debugging
 void print_pid();
-/*end debugging*/
+end debugging*/
 int exit_shell()
 {
-		print_pid();
+
 		fflush(stdin);
 		exit(EXIT_SUCCESS);
 }
@@ -35,7 +35,7 @@ int _strlen(char *s)
 	return (count);
 }
 
-/*added only for debugging*/
+/*added only for debugging
 void print_pid()
 {
     pid_t my_pid;
@@ -44,4 +44,4 @@ void print_pid()
     my_pid = getpid();
 	my_ppid = getppid();
     printf("%u\n %u\n", my_pid, my_ppid);
-}
+}*/
