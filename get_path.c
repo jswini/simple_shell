@@ -1,6 +1,6 @@
 #include "shell_header.h"
 /**
- * str_concat - concatenates two strings
+ * _strcat - concatenates two strings
  * @s1: pointer to first string
  * @s2: pointer to second string
  *
@@ -109,6 +109,11 @@ paths *add_node_end(paths **head, const char *str)
 	return (new);
 }
 
+/**
+ * get_path - finds and tokenizes the path env and adds to linked list
+ *
+ * Return: the head of the path linked list
+ */
 paths *get_path(void)
 {
 	int i;
@@ -117,9 +122,9 @@ paths *get_path(void)
 	char delim[] = {':', '=', '\n'};
 
 	for (i = 0; environ[i] != NULL; i++)
-    {
-        if (strncmp(environ[i], "PATH", 4) == 0)
-        {
+	{
+		if (strncmp(environ[i], "PATH", 4) == 0)
+		{
 			path = environ[i];
 			break;
 		}
@@ -150,37 +155,3 @@ void free_list(paths *head)
 	free(ptr->file_path);
 	free(ptr);
 }
-/**
- * print_list - prints all elements of a singly linked list
- * @h: pointer to start of list
- *
- * Return: number of nodes
- */
-size_t print_list(const paths *h)
-{
-	size_t nodes = 0;
-	paths *ptr = (paths *)h;
-
-	if (!h)
-		return (0);
-
-	while (ptr)
-	{
-		if (!ptr->file_path)
-			printf("(nil)\n");
-		else
-			printf("%s\n", ptr->file_path);
-		nodes++;
-		ptr = ptr->next;
-	}
-	return (nodes);
-}
-/*int main(void)
-{
-	paths *path = NULL;
-
-	path = get_path();
-	print_list(path);
-	free_list(path);
-	return (0);
-}*/
