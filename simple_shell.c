@@ -21,22 +21,21 @@ int main(void)
  */
 void interact(paths *path)
 {
-	char *buffer;
-	size_t bytes = 1;
-	ssize_t num_of_char;
+	char *buffer = NULL;
+	size_t bytes = 0;
+	/*ssize_t num_of_char;*/
 
-	buffer = malloc(sizeof(char) * bytes);
-	if (!buffer)
-		return;
 	while (1 == 1)/*Infinite loop*/
 	{
-		if (write(1, "$ ", 2) < 0)
-		{
-			free(buffer);
-			return;
-		}
-		num_of_char = getline(&buffer, &bytes, stdin);
-		if (num_of_char == EOF)
+		if (isatty(STDIN_FILENO) == 1)
+			{
+				if (write(1, "$ ", 2) < 0)
+				{
+					free(buffer);
+					return;
+				}
+			}
+		if (getline(&buffer, &bytes, stdin) == EOF)
 		{
 			write(1, "\n", 1);
 			free(buffer);
@@ -74,7 +73,7 @@ void find_cmd(paths *path, char *buffer)
 	if (_strcmp(arr[0], "env") == 0)
 		print_env();
 	else if (_strcmp(arr[0], "exit") == 0)
-		exit_shell();
+		exit_shell(path, arr, buffer);
 	else
 	{
 		arr[0] = find_files(path, arr[0]);

@@ -1,23 +1,15 @@
 #include "shell_header.h"
-/**
- * exit_shell - exits shell and ends program
- *
- * Return: exit status
- */
-int exit_shell(void)
-{
 
+int exit_shell(paths *path, char **arr, char *buffer)
+{
+		free_list(path);
+		free(arr);
+		free(buffer);
 		fflush(stdin);
 		exit(EXIT_SUCCESS);
 }
 
-/**
- * print_env - outputs all env vars
- *
- * Return: void
- */
-
-void print_env(void)
+void print_env()
 {
 	int i;
 
@@ -25,5 +17,5 @@ void print_env(void)
 	{
 		write(1, environ[i], _strlen(environ[i]));
 		write(1, "\n", 1);
-	}
+	}	
 }
