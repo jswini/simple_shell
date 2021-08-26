@@ -28,13 +28,13 @@ void interact(paths *path)
 	while (1 == 1)/*Infinite loop*/
 	{
 		if (isatty(STDIN_FILENO) == 1)
+		{
+			if (write(1, "$ ", 2) < 0)
 			{
-				if (write(1, "$ ", 2) < 0)
-				{
-					free(buffer);
-					return;
-				}
+				free(buffer);
+				return;
 			}
+		}
 		if (getline(&buffer, &bytes, stdin) == EOF)
 		{
 			write(1, "\n", 1);
@@ -70,11 +70,7 @@ void find_cmd(paths *path, char *buffer)
 		tok = strtok(NULL, delim);
 	}
 	arr[i] = NULL;
-	if (_strcmp(arr[0], "env") == 0)
-		print_env();
-	else if (_strcmp(arr[0], "exit") == 0)
-		exit_shell(path, arr, buffer);
-	else
+	if (check_builtins(arr, path, buffer) == 0)
 	{
 		arr[0] = find_files(path, arr[0]);
 		if (arr[0] == NULL)

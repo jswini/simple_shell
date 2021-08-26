@@ -30,7 +30,8 @@ void find_cmd(paths *path, char *buffer);
 void execute_command(char **cmd);
 char *find_files(paths *path, char *filename);
 /*builtins.c*/
-int exit_shell(paths *path, char **arr, char *buffer);
+int check_builtins(char **arr, paths *path, char *buffer);
+void exit_shell(paths *path, char **arr, char *buffer);
 void print_env(void);
 /*get_path.c*/
 paths *get_path(void);
