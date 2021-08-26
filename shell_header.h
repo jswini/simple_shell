@@ -24,17 +24,24 @@ typedef struct linked_list
 	struct linked_list *next;
 } paths;
 
-char *find_files(paths *path, char *filename);
-void print_env(void);
-int exit_shell(void);
+/*simple_shell.c*/
 void interact(paths *path);
 void find_cmd(paths *path, char *buffer);
 void execute_command(char **cmd);
+char *find_files(paths *path, char *filename);
+/*builtins.c*/
+int exit_shell(void);
+void print_env(void);
+/*get_path.c*/
 paths *get_path(void);
 void free_list(paths *head);
-size_t print_list(const paths *h);
-char *_strcat(char *s1, char *s2);
+/*string.c*/
 int _strlen(char *s);
+char *_strcat(char *s1, char *s2);
+char *_strdup(const char *str);
+int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, int n);
+/*size_t print_list(const paths *h); for debugging*/
 
 extern char **environ;
 

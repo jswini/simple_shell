@@ -20,21 +20,6 @@ void print_env()
 	}	
 }
 
-/**
- * _strlen - determines how long a string is
- * @s: the input string to measure
- *
- * Return: length of the string
- */
-int _strlen(char *s)
-{
-	int count;
-
-	for (count = 0; *(s + count) != '\0'; count++)
-	{}
-	return (count);
-}
-
 /*added only for debugging
 void print_pid()
 {

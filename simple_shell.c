@@ -71,9 +71,9 @@ void find_cmd(paths *path, char *buffer)
 		tok = strtok(NULL, delim);
 	}
 	arr[i] = NULL;
-	if (strcmp(arr[0], "env") == 0)
+	if (_strcmp(arr[0], "env") == 0)
 		print_env();
-	else if (strcmp(arr[0], "exit") == 0)
+	else if (_strcmp(arr[0], "exit") == 0)
 		exit_shell();
 	else
 	{
