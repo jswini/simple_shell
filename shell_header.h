@@ -11,7 +11,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-
+/**
+ * struct linked_list - sinlgy linked list
+ * @file_path: full path to directory
+ * @next: pointer to next node of list
+ *
+ * Description: list of directories in PATH variable
+ */
 typedef struct linked_list
 {
 	char *file_path;
@@ -19,8 +25,8 @@ typedef struct linked_list
 } paths;
 
 char *find_files(paths *path, char *filename);
-void print_env();
-int exit_shell();
+void print_env(void);
+int exit_shell(void);
 void interact(paths *path);
 void find_cmd(paths *path, char *buffer);
 void execute_command(char **cmd);
