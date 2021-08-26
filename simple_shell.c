@@ -1,31 +1,24 @@
 #include "shell_header.h"
 
 /**
- * main - 
- * @ac: number of arguments
- * @av: array of arguments
+ * main - main file for intiilization of the shell
  *
  * Return: 0
  */
 
-int main(int ac, char **av)
+int main(void)
 {
 	paths *path;
 
 	path = get_path();
-	if (ac > 1)/*Non-interactive*/
-	{
-		return (0);
-	}
-	else /*Interactive*/
-	{
-		interact(path);
-	}
-	(void)av;
+	interact(path);
 	free_list(path);
 	return (0);
 }
-
+/**
+ * interact - command line for the shell
+ * @path: linked list of the directories in the PATH env variable
+ */
 void interact(paths *path)
 {
 	char *buffer;
@@ -55,12 +48,18 @@ void interact(paths *path)
 	free(buffer);
 }
 
+/**
+ * find_cmd - tokenizes input from command line and searches for commands
+ * @path: linked list of the directories in the PATH env variable
+ * @buffer: string containing input from command line
+ */
+
 void find_cmd(paths *path, char *buffer)
 {
 	char **arr, *tok;
 	int i = 0;
 	char delim[] = {' ', '\n'};
-	
+
 
 	arr = malloc(sizeof(char *) * 32);
 	if (!arr)
@@ -72,26 +71,26 @@ void find_cmd(paths *path, char *buffer)
 		tok = strtok(NULL, delim);
 	}
 	arr[i] = NULL;
-	
-	for (i = 0; arr[i] != NULL; i++)
-		printf("%d %s\n", i, arr[i]);
-	
 	if (strcmp(arr[0], "env") == 0)
 		print_env();
-	if (strcmp(arr[0], "exit") == 0)
+	else if (strcmp(arr[0], "exit") == 0)
 		exit_shell();
-
-	arr[0] = find_files(path, arr[0]);
-	if (arr[0] == NULL)
-		perror("find failed");
 	else
 	{
-		execute_command(arr);
+		arr[0] = find_files(path, arr[0]);
+		if (arr[0] == NULL)
+			perror("Command not found");
+		else
+			execute_command(arr);
 	}
 	free(arr[0]);
 	free(arr);
-	
 }
+
+/**
+ * execute_command - executes a non-builtin command
+ * @cmd: array containing the command and arguments as strings
+ */
 
 void execute_command(char **cmd)
 {
@@ -101,50 +100,47 @@ void execute_command(char **cmd)
 	check_process = fork();
 	if (check_process < 0)
 	{
-		perror("fork error");
+		perror("Could not create child process");
 		return;
 	}
-	
 	if (check_process == 0)
-	{	
+	{
 		for (i = 0; cmd[i] != NULL; i++)
 		{
 			if (execve(cmd[0], cmd, NULL) == -1)
-				perror("execve error");
+				perror("Command could not execute");
 		}
 	}
 	else
 	{
-			wait(&status);
+		wait(&status);
 	}
 }
+
+/**
+ * find_files - checks for command file existance
+ * @path: linked list of the directories in the PATH env variable
+ * @filename: command to search for
+ *
+ * Return: full path to command or NULL on failure
+ */
+
 char *find_files(paths *path, char *filename)
-   {
-    struct stat st;
+{
+	struct stat st;
 	paths  *ptr;
 	char *file;
 
 	if (stat(filename, &st) == 0)
-    {
-        return (filename);
-	}
-    
+		return (filename);
 	ptr = path;
-    while (ptr->next)
-    {
+	while (ptr->next)
+	{
 		file = _strcat(ptr->file_path, filename);
-        if (stat(file, &st) == 0)
-        {
-/*			free_list(path);*/
-			printf("file3: %s\n", file);
+		if (stat(file, &st) == 0)
 			return (file);
-        }
-		else
-		{
-			free(file);
-		}
-        ptr = ptr->next;
-    }
-    perror("file find failure");
+		free(file);
+		ptr = ptr->next;
+	}
 	return (NULL);
 }
