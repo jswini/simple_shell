@@ -36,6 +36,7 @@ void print_env(void);
 /*get_path.c*/
 paths *get_path(void);
 void free_list(paths *head);
+int _atoi(char *s);
 /*string.c*/
 int _strlen(char *s);
 char *_strcat(char *s1, char *s2);
