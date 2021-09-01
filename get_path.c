@@ -51,6 +51,7 @@ paths *add_node_end(paths **head, const char *str)
  */
 paths *get_path(void)
 {
+	extern char **environ;
 	int i;
 	char *path, *path_tok;
 	paths *path_list = NULL;

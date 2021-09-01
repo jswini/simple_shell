@@ -44,6 +44,4 @@ int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, int n);
 /*size_t print_list(const paths *h); for debugging*/
 
-extern char **environ;
-
 #endif /*SHELL_HEADER_H*/
