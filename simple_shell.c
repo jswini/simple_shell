@@ -82,7 +82,7 @@ void find_cmd(paths *path, char *buffer)
 			perror("Command not found");
 		else
 			execute_command(arr);
-		if(j == 1)
+		if (j == 1)
 			free(arr[0]);
 	}
 	free(arr);
