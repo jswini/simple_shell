@@ -12,7 +12,7 @@ int check_builtins(char **arr, paths *path, char *buffer)
 	if (_strcmp(arr[0], "exit") == 0)
 	{
 		exit_shell(path, arr, buffer);
-		write(1, "invalid input for exit\n", 23);
+		write(1, "invalid exit value\n", 19);
 		return (1);
 	}
 	else if (_strcmp(arr[0], "env") == 0)
@@ -32,20 +32,13 @@ int check_builtins(char **arr, paths *path, char *buffer)
 
 void exit_shell(paths *path, char **arr, char *buffer)
 {
-	int i, exit_val = EXIT_SUCCESS;
-	char *arg;
+	int exit_val = EXIT_SUCCESS;
 
-	if (arr[2] != NULL)
-		return;
 	if (arr[1] != NULL)
 	{
-		arg = (char *)arr[1];
-		for (i = 0; arg[i] != '\0'; i++)
-		{
-			if (arg[i] < '0' || arg[i] > '9')
-				return;
-		}
 		exit_val = _atoi(arr[1]);
+		if (exit_val < 0)
+			return;
 	}
 	free_list(path);
 	free(arr);
@@ -60,7 +53,6 @@ void exit_shell(paths *path, char **arr, char *buffer)
 
 void print_env(void)
 {
-	extern char **environ;
 	int i;
 
 	for (i = 0; environ[i] != NULL; i++)
@@ -92,7 +84,7 @@ int _atoi(char *s)
 	{
 		if (s[i] == '-')
 			sign *= -1;
-		if (s[i] >= '0' && s[i] <= '9')
+		else if (s[i] >= '0' && s[i] <= '9')
 		{
 			if ((n * -10) - (s[i] - 48) == -2147483648)
 			{
@@ -102,6 +94,10 @@ int _atoi(char *s)
 			n = n * 10 + (s[i] - '0');
 			if (s[i + 1] < '0' || s[i + 1] > '9')
 				break;
+		}
+		else
+		{
+			return (-1);
 		}
 	}
 	return (n * sign);
