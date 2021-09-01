@@ -58,7 +58,7 @@ paths *get_path(void)
 
 	for (i = 0; environ[i] != NULL; i++)
 	{
-		if (strncmp(environ[i], "PATH", 4) == 0)
+		if (_strncmp(environ[i], "PATH", 4) == 0)
 		{
 			path = environ[i];
 			break;
