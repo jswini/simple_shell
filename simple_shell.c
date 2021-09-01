@@ -37,7 +37,7 @@ void interact(paths *path)
 		}
 		if (getline(&buffer, &bytes, stdin) == EOF)
 		{
-			write(1, "\n", 1);
+			/*write(1, "\n", 1);*/
 			free(buffer);
 			return;
 		}
@@ -55,8 +55,8 @@ void interact(paths *path)
 
 void find_cmd(paths *path, char *buffer)
 {
-	char **arr, *tok;
-	int i = 0;
+	char **arr, *tok, *check_name;
+	int i = 0, j = 0;
 	char delim[] = {' ', '\n'};
 
 
@@ -72,12 +72,18 @@ void find_cmd(paths *path, char *buffer)
 	arr[i] = NULL;
 	if (check_builtins(arr, path, buffer) == 0)
 	{
-		arr[0] = find_files(path, arr[0]);
+		check_name = find_files(path, arr[0]);
+		if (_strcmp(check_name, arr[0]) != 0)
+		{
+			arr[0] = check_name;
+			j = 1;
+		}
 		if (arr[0] == NULL)
 			perror("Command not found");
 		else
 			execute_command(arr);
-		free(arr[0]);
+		if(j == 1)
+			free(arr[0]);
 	}
 	free(arr);
 }
