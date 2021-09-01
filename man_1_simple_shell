@@ -1,0 +1,23 @@
+.\” Man Page for Simple Shell
+.\” Contact Hope Parnellor Jeffrey Winikoff to correct errors
+.TH man 1 “08/25/2021” “1.0” simple_shell man page
+.SH NAME
+    hsh \- runs a simple shell to emulate functionality of BASH 
+.SH SYNOPSIS
+    ./hsh
+.SH DESCRIPTION
+    Use basic shell commands that are executable in BASH, as well as built-ins such as exit to leave the shell, and env to show all of the environment variables.
+.SH EXAMPLES
+    ls -la   works in this shell as it does in BASH
+exit - ends the program
+env - prints all of the environment variables file
+.SH SEE ALSO
+    man 1 sh for things we want to emulate and other usages of this simple shell
+.SH BUGS
+    It doesn’t include all functionality of BASH
+.SH AUTHOR
+   Hope Parnell <3251@holbertonschool.com>
+Jeffrey Winikoff <2677@holbertonschool.com>
+.SH COPYRIGHT
+    Not Applicable
+
