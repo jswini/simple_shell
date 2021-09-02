@@ -52,10 +52,12 @@ paths *add_node_end(paths **head, const char *str)
 paths *get_path(void)
 {
 	int i;
-	char *path, *path_tok;
+	char *path = NULL, *path_tok;
 	paths *path_list = NULL;
 	char delim[] = {':', '=', '\n'};
 
+	if (!environ)
+		return(NULL);
 	for (i = 0; environ[i] != NULL; i++)
 	{
 		if (_strncmp(environ[i], "PATH", 4) == 0)
@@ -63,6 +65,10 @@ paths *get_path(void)
 			path = _strdup(environ[i]);
 			break;
 		}
+	}
+	if (path == NULL)
+	{
+		return(NULL);
 	}
 	path_tok = strtok(path, delim);
 	path_tok = strtok(NULL, delim);
