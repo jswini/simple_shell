@@ -3,57 +3,63 @@
 /**
  * main - main file for intiilization of the shell
  *
- * Return: 0
+ * Return: execution status of the shell
  */
 
 int main(void)
 {
 	paths *path;
+	int status = 0;
 
 	path = get_path();
-	interact(path);
+	status = interact(path, status);
 	free_list(path);
-	return (0);
+	return (status);
 }
 /**
  * interact - command line for the shell
  * @path: linked list of the directories in the PATH env variable
+ * @status: current execution status of the shell
+ *
+ * Return: current execution status of the shell
  */
-void interact(paths *path)
+int interact(paths *path, int status)
 {
 	char *buffer = NULL;
 	size_t bytes = 0;
-	/*ssize_t num_of_char;*/
+	int i;
 
 	while (1 == 1)/*Infinite loop*/
 	{
 		if (isatty(STDIN_FILENO) == 1)
 		{
 			if (write(1, "$ ", 2) < 0)
-			{
-				free(buffer);
-				return;
-			}
+				break;
 		}
 		if (getline(&buffer, &bytes, stdin) == EOF)
+			break;
+		for (i = 0; buffer[i] != '\n'; i++)
 		{
-			/*write(1, "\n", 1);*/
-			free(buffer);
-			return;
+			if (buffer[i] != ' ')
+			{
+				status = find_cmd(path, buffer, status);
+			}
 		}
-		if (buffer[0] != '\n')
-			find_cmd(path, buffer);
 	}
 	free(buffer);
+	return (status);
 }
 
 /**
  * find_cmd - tokenizes input from command line and searches for commands
  * @path: linked list of the directories in the PATH env variable
  * @buffer: string containing input from command line
+ * @status: current execution status of the shell
+ *
+ * Return: current execution status of the shell
  */
 
-void find_cmd(paths *path, char *buffer)
+int find_cmd(paths *path, char *buffer, int status)
 {
 	char **arr, *tok, *check_name;
 	int i = 0, j = 0;
@@ -62,7 +68,7 @@ void find_cmd(paths *path, char *buffer)
 
 	arr = malloc(sizeof(char *) * 32);
 	if (!arr)
-		return;
+		return (status);
 	tok = strtok(buffer, delim);
 	for (i = 0; tok != NULL; i++)
 	{
@@ -70,7 +76,7 @@ void find_cmd(paths *path, char *buffer)
 		tok = strtok(NULL, delim);
 	}
 	arr[i] = NULL;
-	if (check_builtins(arr, path, buffer) == 0)
+	if (check_builtins(arr, path, buffer, status) == 0)
 	{
 		check_name = find_files(path, arr[0]);
 		if (_strcmp(check_name, arr[0]) != 0)
@@ -81,28 +87,32 @@ void find_cmd(paths *path, char *buffer)
 		if (arr[0] == NULL)
 			perror("Command not found");
 		else
-			execute_command(arr);
+			status = execute_command(arr, status);
 		if (j == 1)
 			free(arr[0]);
 	}
 	free(arr);
+	return (status);
 }
 
 /**
  * execute_command - executes a non-builtin command
  * @cmd: array containing the command and arguments as strings
+ * @status: current execution status of the shell
+ *
+ * Return: current execution status of the shell
  */
 
-void execute_command(char **cmd)
+int execute_command(char **cmd, int status)
 {
 	pid_t check_process;
-	int i, status;
+	int i;
 
 	check_process = fork();
 	if (check_process < 0)
 	{
 		perror("Could not create child process");
-		return;
+		return (status);
 	}
 	if (check_process == 0)
 	{
@@ -115,7 +125,10 @@ void execute_command(char **cmd)
 	else
 	{
 		wait(&status);
+		status = WEXITSTATUS(status);
+		return (status);
 	}
+	return (status);
 }
 
 /**

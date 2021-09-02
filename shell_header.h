@@ -25,13 +25,13 @@ typedef struct linked_list
 } paths;
 
 /*simple_shell.c*/
-void interact(paths *path);
-void find_cmd(paths *path, char *buffer);
-void execute_command(char **cmd);
+int interact(paths *path, int status);
+int find_cmd(paths *path, char *buffer, int status);
+int execute_command(char **cmd, int status);
 char *find_files(paths *path, char *filename);
 /*builtins.c*/
-int check_builtins(char **arr, paths *path, char *buffer);
-void exit_shell(paths *path, char **arr, char *buffer);
+int check_builtins(char **arr, paths *path, char *buffer, int status);
+void exit_shell(paths *path, char **arr, char *buffer, int status);
 void print_env(void);
 /*get_path.c*/
 paths *get_path(void);

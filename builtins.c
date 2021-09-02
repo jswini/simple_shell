@@ -4,14 +4,15 @@
  * @arr: array containing command and arguments
  * @path: linked list of the directories in the PATH env variable
  * @buffer: full command line input
+ * @status: current execution status of the shell
  *
  * Return: 1 if a builtin completes, 0 if no builtin is found
  */
-int check_builtins(char **arr, paths *path, char *buffer)
+int check_builtins(char **arr, paths *path, char *buffer, int status)
 {
 	if (_strcmp(arr[0], "exit") == 0)
 	{
-		exit_shell(path, arr, buffer);
+		exit_shell(path, arr, buffer, status);
 		write(1, "invalid exit value\n", 19);
 		return (1);
 	}
@@ -20,7 +21,7 @@ int check_builtins(char **arr, paths *path, char *buffer)
 		print_env();
 		return (1);
 	}
-	return (0);
+	return (status);
 }
 
 /**
@@ -28,23 +29,22 @@ int check_builtins(char **arr, paths *path, char *buffer)
  * @arr: array containing command and arguments
  * @path: linked list of the directories in the PATH env variable
  * @buffer: full command line input
+ * @status: current execution status of the shell
  */
 
-void exit_shell(paths *path, char **arr, char *buffer)
+void exit_shell(paths *path, char **arr, char *buffer, int status)
 {
-	int exit_val = EXIT_SUCCESS;
-
 	if (arr[1] != NULL)
 	{
-		exit_val = _atoi(arr[1]);
-		if (exit_val < 0)
+		status = _atoi(arr[1]);
+		if (status < 0)
 			return;
 	}
 	free_list(path);
 	free(arr);
 	free(buffer);
 	fflush(stdin);
-	exit(exit_val);
+	exit(status);
 }
 
 /**

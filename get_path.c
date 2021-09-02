@@ -60,7 +60,7 @@ paths *get_path(void)
 	{
 		if (strncmp(environ[i], "PATH", 4) == 0)
 		{
-			path = environ[i];
+			path = _strdup(environ[i]);
 			break;
 		}
 	}
@@ -71,7 +71,7 @@ paths *get_path(void)
 		add_node_end(&path_list, path_tok);
 		path_tok = strtok(NULL, delim);
 	}
-
+	free(path);
 	return (path_list);
 }
 /**
