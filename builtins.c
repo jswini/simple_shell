@@ -40,7 +40,8 @@ void exit_shell(paths *path, char **arr, char *buffer, int status)
 		if (status < 0)
 			return;
 	}
-	free_list(path);
+	if (path)
+		free_list(path);
 	free(arr);
 	free(buffer);
 	fflush(stdin);

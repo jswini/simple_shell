@@ -13,7 +13,8 @@ int main(void)
 
 	path = get_path();
 	status = interact(path, status);
-	free_list(path);
+	if (path)
+		free_list(path);
 	return (status);
 }
 /**
@@ -148,6 +149,8 @@ char *find_files(paths *path, char *filename)
 
 	if (stat(filename, &st) == 0)
 		return (filename);
+	if (!path)
+		return(NULL);
 	ptr = path;
 	while (ptr->next)
 	{
