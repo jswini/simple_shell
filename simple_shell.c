@@ -43,6 +43,7 @@ int interact(paths *path, int status)
 			if (buffer[i] != ' ')
 			{
 				status = find_cmd(path, buffer, status);
+				break;
 			}
 		}
 	}
